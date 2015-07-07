@@ -138,7 +138,10 @@ class RequestsMock(object):
         if isinstance(body, six.text_type):
             body = body.encode('utf-8')
 
-        self._urls.append({
+        if status in REDIRECT_STATI:
+
+
+        this_response = {
             'url': url,
             'method': method,
             'body': body,
@@ -147,7 +150,10 @@ class RequestsMock(object):
             'status': status,
             'adding_headers': adding_headers,
             'stream': stream,
-        })
+            'history': history_list,
+        }
+
+        self._urls.append(this_response)
 
     def add_callback(self, method, url, callback, match_querystring=False,
                      content_type='text/plain'):
@@ -229,6 +235,20 @@ class RequestsMock(object):
 
             self._calls.add(request, response)
             raise response
+
+        while match.get('status', 200) in REDIRECT_STATI:
+            class FakeRequest(object):
+                def __init__(self, method, url)
+                    self.method = method
+                    self.url = url
+
+            class RequestHistory
+
+            # add current to history
+            # get match
+            new_match = self._find_match(new_request)
+            if new_match:
+                match = new_match
 
         if 'body' in match and isinstance(match['body'], Exception):
             self._calls.add(request, match['body'])
